@@ -1,6 +1,5 @@
 import {
   View,
-  Image,
   StyleSheet,
   TextInput,
   ActivityIndicator,
@@ -10,31 +9,38 @@ import {
   Platform,
 } from "react-native";
 import React, { useState } from "react";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { COLORS } from "@/utils/colors";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 const schema = z.object({
+  name: z.string().optional(),
   email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .max(50, "Password is too long"),
 });
 
 type FormData = z.infer<typeof schema>;
 
-const Login = () => {
+const Register = () => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const {
     control,
     handleSubmit,
+    trigger,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
+      name: "",
       email: "simon@galaxies.dev",
-      password: "Test123",
+      password: "123456",
     },
     mode: "onChange",
   });
@@ -50,12 +56,24 @@ const Login = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <Image
-        source={{ uri: "https://galaxies.dev/img/logos/logo--blue.png" }}
-        style={styles.image}
+      <Controller
+        control={control}
+        name="name"
+        render={({ field: { onChange, value } }) => (
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Name (optional)"
+              value={value}
+              onChangeText={onChange}
+              style={styles.inputField}
+              placeholderTextColor={COLORS.placeholder}
+            />
+            {errors.name && (
+              <Text style={styles.errorText}>{errors.name.message}</Text>
+            )}
+          </View>
+        )}
       />
-      <Text style={styles.header}>Galaxies</Text>
-      <Text style={styles.subheader}>The app to be.</Text>
 
       <Controller
         control={control}
@@ -112,20 +130,10 @@ const Login = () => {
             !errors.email && !errors.password ? {} : styles.buttonTextDisabled,
           ]}
         >
-          Sign in
+          Sign up
         </Text>
       </TouchableOpacity>
-      <Link href={"/register"} asChild>
-        <TouchableOpacity style={styles.outlineButton}>
-          <Text style={styles.buttonText}>Create Account</Text>
-        </TouchableOpacity>
-      </Link>
 
-      <Link href={"/privacy"} asChild>
-        <TouchableOpacity style={{ alignItems: "center" }}>
-          <Text style={{ color: COLORS.primary }}>Privacy Policy</Text>
-        </TouchableOpacity>
-      </Link>
       {loading && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator color="#fff" size="large" />
@@ -142,25 +150,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     justifyContent: "center",
   },
-  image: {
-    width: "100%",
-    height: 100,
-    resizeMode: "contain",
-  },
-  header: {
-    fontSize: 40,
-    textAlign: "center",
-    marginBottom: 10,
-    color: "#fff",
-  },
-  subheader: {
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 40,
-    color: "#fff",
+  inputContainer: {
+    marginBottom: 12,
   },
   inputField: {
-    marginVertical: 4,
     height: 50,
     borderWidth: 1,
     borderColor: COLORS.primary,
@@ -169,30 +162,18 @@ const styles = StyleSheet.create({
     color: "#fff",
     backgroundColor: COLORS.input,
   },
+  errorText: {
+    color: "#ff6b6b",
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 4,
+  },
   button: {
     marginTop: 20,
     alignItems: "center",
     backgroundColor: COLORS.primary,
     padding: 12,
     borderRadius: 4,
-  },
-  outlineButton: {
-    marginVertical: 8,
-    alignItems: "center",
-    backgroundColor: "transparent",
-    padding: 12,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: COLORS.primary,
-  },
-  inputContainer: {
-    marginBottom: 12,
-  },
-  errorText: {
-    color: "#ff6b6b",
-    fontSize: 12,
-    marginTop: 4,
-    marginLeft: 4,
   },
   buttonDisabled: {
     opacity: 0.5,
@@ -213,4 +194,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Register;

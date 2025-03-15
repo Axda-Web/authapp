@@ -22,6 +22,10 @@ const Layout = () => {
             headerBackTitle: "Login",
           }}
         />
+        <Stack.Screen
+          name="privacy"
+          options={{ title: "Privacy Policy", presentation: "modal" }}
+        />
       </Stack>
     </>
   );
