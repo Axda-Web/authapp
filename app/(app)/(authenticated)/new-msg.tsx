@@ -13,7 +13,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createMessage } from "@/utils/api";
 import { useRouter } from "expo-router";
 import { COLORS } from "@/utils/colors";
-// import * as Burnt from "burnt";
+import * as Burnt from "burnt";
 
 const NewMessagePage = () => {
   const [message, setMessage] = useState("");
@@ -27,19 +27,19 @@ const NewMessagePage = () => {
     onSuccess: () => {
       // Invalidate messages query to refresh the list
       queryClient.invalidateQueries({ queryKey: ["messages"] });
-      //   Burnt.toast({
-      //     title: "Message sent successfully",
-      //     duration: 3,
-      //   });
+      Burnt.toast({
+        title: "Message sent successfully",
+        duration: 3,
+      });
       router.back();
     },
     onError: (error) => {
       console.error("Failed to send message:", error);
-      // Burnt.alert({
-      //     title: "Failed to send message",
-      //     message: error.message,
-      //     duration: 3,
-      // });
+      Burnt.alert({
+        title: "Failed to send message",
+        message: error.message,
+        duration: 3,
+      });
     },
   });
 
