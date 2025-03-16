@@ -6,10 +6,10 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Text,
-  KeyboardAvoidingView,
-  Platform,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { Link } from "expo-router";
 import { COLORS } from "@/utils/colors";
 import { useForm, Controller } from "react-hook-form";
@@ -25,6 +25,7 @@ type FormData = z.infer<typeof schema>;
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
+  const { onLogin } = useAuth();
 
   const {
     control,
@@ -41,15 +42,15 @@ const Login = () => {
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
-    console.log(data);
+    const result = await onLogin!(data.email, data.password);
+    if (result && result.error) {
+      Alert.alert("Error", result.msg);
+    }
     setLoading(false);
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <Image
         source={{ uri: "https://galaxies.dev/img/logos/logo--blue.png" }}
         style={styles.image}
@@ -115,6 +116,7 @@ const Login = () => {
           Sign in
         </Text>
       </TouchableOpacity>
+
       <Link href={"/register"} asChild>
         <TouchableOpacity style={styles.outlineButton}>
           <Text style={styles.buttonText}>Create Account</Text>
@@ -126,12 +128,13 @@ const Login = () => {
           <Text style={{ color: COLORS.primary }}>Privacy Policy</Text>
         </TouchableOpacity>
       </Link>
+
       {loading && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator color="#fff" size="large" />
         </View>
       )}
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 

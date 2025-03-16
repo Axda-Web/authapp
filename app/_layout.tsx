@@ -1,11 +1,10 @@
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import { COLORS } from "@/utils/colors";
+import { AuthProvider } from "@/context/AuthContext";
 
 const Layout = () => {
   return (
-    <>
-      <StatusBar style="light" />
+    <AuthProvider>
       <Stack
         screenOptions={{
           headerStyle: {
@@ -27,7 +26,7 @@ const Layout = () => {
           options={{ title: "Privacy Policy", presentation: "modal" }}
         />
       </Stack>
-    </>
+    </AuthProvider>
   );
 };
 

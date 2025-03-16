@@ -5,10 +5,10 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Text,
-  KeyboardAvoidingView,
-  Platform,
+  Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
 import { COLORS } from "@/utils/colors";
 import { useForm, Controller } from "react-hook-form";
@@ -28,6 +28,7 @@ type FormData = z.infer<typeof schema>;
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
+  const { onRegister } = useAuth();
   const router = useRouter();
 
   const {
@@ -47,15 +48,17 @@ const Register = () => {
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
-    console.log(data);
+    const result = await onRegister!(data.email, data.password, data.name);
+    if (result && result.error) {
+      Alert.alert("Error", result.msg);
+    } else {
+      router.back();
+    }
     setLoading(false);
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <Controller
         control={control}
         name="name"
@@ -139,7 +142,7 @@ const Register = () => {
           <ActivityIndicator color="#fff" size="large" />
         </View>
       )}
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
