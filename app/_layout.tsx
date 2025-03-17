@@ -1,6 +1,6 @@
 import { Slot } from "expo-router";
 import { useFonts } from "expo-font";
-// import { Inter_900Black, Inter_400Regular } from '@expo-google-fonts/inter';
+import { Inter_900Black, Inter_400Regular } from "@expo-google-fonts/inter";
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { AuthProvider } from "@/context/AuthContext";
@@ -13,7 +13,7 @@ import {
 import { useColorScheme } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,21 +24,21 @@ const queryClient = new QueryClient({
 });
 
 export default function RootLayout() {
-  // let [fontsLoaded] = useFonts({
-  //   Inter_900Black,
-  //   Inter_400Regular,
-  // });
+  let [fontsLoaded] = useFonts({
+    Inter_900Black,
+    Inter_400Regular,
+  });
   const colorScheme = useColorScheme();
 
-  // useEffect(() => {
-  //   if (fontsLoaded) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [fontsLoaded]);
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
 
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
