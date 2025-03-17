@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-// import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { Message } from "@/utils/api";
 import { Link } from "expo-router";
 import { useColorScheme } from "react-native";
@@ -36,9 +36,9 @@ export const MessageItem = ({ message }: MessageItemProps) => {
               {message.content}
             </Text>
             <Text style={styles.time}>
-              {/* {formatDistanceToNow(new Date(message.createdAt), {
+              {formatDistanceToNow(new Date(message.createdAt), {
                 addSuffix: true,
-              })} */}
+              })}
             </Text>
           </View>
         </View>
