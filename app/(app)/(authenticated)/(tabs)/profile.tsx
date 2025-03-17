@@ -8,7 +8,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { useAuth } from "@/context/AuthContext";
-// import * as ImagePicker from "expo-image-picker";
+import * as ImagePicker from "expo-image-picker";
 import { COLORS } from "@/utils/colors";
 import { getUserInfo, uploadImage } from "@/utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -35,25 +35,25 @@ const Page = () => {
     },
   });
 
-  //   const handleSelectImage = async () => {
-  //     try {
-  //       const result = await ImagePicker.launchImageLibraryAsync({
-  //         mediaTypes: "images",
-  //         allowsEditing: true,
-  //         aspect: [1, 1],
-  //         quality: 0.5,
-  //       });
+  const handleSelectImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: "images",
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
 
-  //       if (!result.canceled) {
-  //         uploadImageMutation.mutate({
-  //           uri: result.assets[0].uri,
-  //           token: token || "",
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error("Error picking image:", error);
-  //     }
-  //   };
+      if (!result.canceled) {
+        uploadImageMutation.mutate({
+          uri: result.assets[0].uri,
+          token: token || "",
+        });
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
+    }
+  };
 
   return (
     <View
@@ -65,7 +65,7 @@ const Page = () => {
       ]}
     >
       <TouchableOpacity
-        // onPress={handleSelectImage}
+        onPress={handleSelectImage}
         style={styles.avatarContainer}
       >
         {user?.data?.avatar ? (
